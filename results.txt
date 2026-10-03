@@ -1,0 +1,111 @@
+Loaded 10030 rows x 21 columns
+Removed 30 duplicate rows
+  Midterm_Score: 2 out-of-range values set to missing
+  Final_Score: 2 out-of-range values set to missing
+  Attendance (%): 3 out-of-range values set to missing
+  Age: 2 implausible values set to missing
+
+Missing values per column (after fixing bad values):
+Age                    202
+Attendance (%)         202
+Midterm_Score          202
+Final_Score            202
+Assignments_Avg        200
+Quizzes_Avg            200
+Participation_Score    200
+Projects_Score         200
+math_score               1
+
+=== EDA ===
+       Attendance (%)  Total_Score  Midterm_Score  Final_Score
+count         10000.0      10000.0        10000.0      10000.0
+mean             75.2         75.0           70.4         69.8
+std              14.3         14.3           17.1         17.1
+min              50.0         50.0           40.0         40.0
+25%              63.1         62.8           55.7         55.2
+50%              75.3         75.1           70.6         69.9
+75%              87.2         87.5           84.9         84.5
+max             100.0        100.0          100.0        100.0
+
+Attendance vs Total_Score: Pearson r=-0.011, Spearman rho=-0.011
+
+Mean Total_Score by attendance band:
+                  mean  count
+Attendance_Band             
+<60              75.1   1922
+60-75            75.2   2917
+75-90            75.0   3227
+90+              74.7   1934
+Attendance vs Grade (A=4..F=0): Spearman rho=0.270
+Mean attendance by Grade:
+ Grade
+A    80.0
+B    78.3
+C    71.7
+D    70.5
+F    71.3
+Mean Total_Score by Grade:
+ Grade
+A    74.6
+B    75.0
+C    75.5
+D    75.2
+F    75.2
+
+=== Risk distribution (rule-based labels) ===
+Risk
+LOW       4804
+MEDIUM    3187
+HIGH      2009
+
+=== 5-fold CV (macro F1 - treats all 3 risk classes equally) ===
+Logistic Regression  0.366 (+/- 0.007)
+Decision Tree        0.341 (+/- 0.027)
+Random Forest        0.287 (+/- 0.008)
+-> Selected: Logistic Regression
+
+=== Test-set results (Logistic Regression) ===
+Accuracy 0.400 | Macro Precision 0.379 | Macro Recall 0.389 | Macro F1 0.357
+              precision    recall  f1-score   support
+
+         LOW       0.57      0.53      0.55       961
+      MEDIUM       0.33      0.14      0.20       637
+        HIGH       0.24      0.50      0.33       402
+
+    accuracy                           0.40      2000
+   macro avg       0.38      0.39      0.36      2000
+weighted avg       0.43      0.40      0.39      2000
+
+Baseline (always predict 'LOW'): accuracy 0.480, macro F1 0.216
+Model macro one-vs-rest ROC-AUC: 0.584  (0.5 = no better than chance)
+
+Report saved: output/risk_report.csv (10000 students)
+              Student Attendance  Marks Grade Risk Model_Early_Warning                                                                                                                    Recommendation
+Ahmed Johnson (S1336)        50%  54.61     D HIGH                HIGH Improve attendance; focus on class participation; consider joining the preparation course; schedule an advisor meeting this week.
+  Maria Brown (S8380)        50%  67.85     D HIGH                HIGH                               Improve attendance; consider joining the preparation course; schedule an advisor meeting this week.
+Omar Williams (S1964)        50%  58.84     C HIGH                HIGH                                                                        Improve attendance; schedule an advisor meeting this week.
+   Omar Brown (S7649)        50%  58.51     D HIGH                HIGH                                                                        Improve attendance; schedule an advisor meeting this week.
+   Emma Jones (S2084)        50%  55.28     F HIGH                HIGH                                          Improve attendance; focus on class participation; schedule an advisor meeting this week.
+
+--- Sample student cards ---
+
+Student: S6342
+Attendance: 84%
+Marks: 50 (Grade C)
+Risk: HIGH   (model early-warning: LOW)
+Recommendation:
+Focus on assignment completion; consider joining the preparation course; schedule an advisor meeting this week.
+
+Student: S8239
+Attendance: 75%
+Marks: 75 (Grade A)
+Risk: LOW   (model early-warning: LOW)
+Recommendation:
+Keep attendance above 80%; focus on class participation and assignment completion.
+
+Student: S3140
+Attendance: 66%
+Marks: 100 (Grade B)
+Risk: LOW   (model early-warning: HIGH)
+Recommendation:
+Keep attendance above 80%.

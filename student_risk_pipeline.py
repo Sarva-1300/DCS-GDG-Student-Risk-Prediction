@@ -30,6 +30,17 @@ OUT = "output"; PLOTS = os.path.join(OUT, "plots")
 os.makedirs(PLOTS, exist_ok=True)
 sns.set_theme(style="whitegrid")
 
+# Everything printed to the console is ALSO saved to output/results.txt, so the
+# findings and model metrics are preserved without having to re-run the script.
+class Tee:
+    def __init__(self, *streams): self.streams = streams
+    def write(self, text):
+        for st in self.streams: st.write(text)
+    def flush(self):
+        for st in self.streams: st.flush()
+_results_file = open(os.path.join(OUT, "results.txt"), "w", encoding="utf-8")
+sys.stdout = Tee(sys.__stdout__, _results_file)
+
 # =====================================================================
 # 0. LOAD
 # =====================================================================
